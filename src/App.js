@@ -37,7 +37,8 @@ const wagmiClient = createClient({
 const Faucet = () => { 
 
   console.log('getUSDC');
-  const { config } = usePrepareContractWrite({
+  const { config, error: prepareError,
+    isError: isPrepareError } = usePrepareContractWrite({
     address: '0x9019a492Cce0CF7c2f1dc04D1B63b6A1bcda285a',
     abi: [
       {
@@ -50,10 +51,11 @@ const Faucet = () => {
     ],
     functionName: 'request',
   });
-  const { data, write: request } = useContractWrite(config);
+  const { data,  error, isError, write: request } = useContractWrite(config);
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   })
+  const errorRe = new RegExp('message(.?)', 'g');
   return ( 
     <div className="FaucetBtn">
       {isSuccess ?
@@ -64,8 +66,11 @@ const Faucet = () => {
           </div>
         </div>
         :
-        <button disabled={!request} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</button>
+        <button disabled={!request || isError || isPrepareError} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</button>
       }
+      {(isPrepareError || isError) && (
+        <div className='Error'>Error: {(prepareError || error)?.message}</div>
+      )}
     </div>
     
   )
