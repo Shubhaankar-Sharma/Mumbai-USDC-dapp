@@ -55,7 +55,6 @@ const Faucet = () => {
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   })
-  const errorRe = new RegExp('message(.?)', 'g');
   return ( 
     <div className="FaucetBtn">
       {isSuccess ?
