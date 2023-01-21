@@ -3,7 +3,9 @@ import './App.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import {useTextC} from './theme.js';
 import {
+  darkTheme,
   getDefaultWallets,
+  lightTheme,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, useAccount, WagmiConfig } from 'wagmi';
@@ -12,8 +14,9 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 //import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 // import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useToast, Text, Link } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useToast, Text, Link, useColorMode } from '@chakra-ui/react';
 import Navbar from './Navbar';
+// import { defaultAvatar } from '@rainbow-me/rainbowkit/dist/components/RainbowKitProvider/AvatarContext';
 // import { Br } from '@saas-ui/react';
 
 // import { mode } from '@chakra-ui/theme-tools';
@@ -46,25 +49,25 @@ const Landing = () => {
   )
 };
 
-const Faucet = () => { 
+const Faucet = () => {
 
   console.log('getUSDC');
   const textC = useTextC();
   const { config, error: prepareError,
     isError: isPrepareError } = usePrepareContractWrite({
-    address: '0x9019a492Cce0CF7c2f1dc04D1B63b6A1bcda285a',
-    abi: [
-      {
-        "inputs": [],
-        "name": "request",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }
-    ],
-    functionName: 'request',
-  });
-  const { data,  error, isError, write: request } = useContractWrite(config);
+      address: '0x9019a492Cce0CF7c2f1dc04D1B63b6A1bcda285a',
+      abi: [
+        {
+          "inputs": [],
+          "name": "request",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      functionName: 'request',
+    });
+  const { data, error, isError, write: request } = useContractWrite(config);
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   });
@@ -81,33 +84,36 @@ const Faucet = () => {
     });
     console.log((prepareError || error)?.message);
   }
-  return ( 
+  return (
     <Box>
       {isSuccess ?
         <Center>
           <Box>
-            <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} color={ textC } isExternal>Success! View on PolygonScan</Link>
+            <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} color={textC} isExternal>Success! View on PolygonScan</Link>
           </Box>
         </Center>
         :
-        <Button textColor={textC} disabled={!request || isError || isPrepareError} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</Button>
+        (isLoading?
+          <Button textColor = { textC } disabled = { true } isLoading>Requesting...</Button>
+          :
+          <Button textColor={textC} disabled={true} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</Button>
+        )
       }
       {(isPrepareError || isError) ? errToast() : null}
     </Box>
-    
   )
 };
 
 const App = () => {
   const textC = useTextC();
   const { address, isConnected } = useAccount();
-
+  const { colorMode } = useColorMode();
   console.log('address', address);
   console.log('isConnected', isConnected);
 
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>
+      <RainbowKitProvider chains={chains} theme={colorMode === 'light' ? lightTheme() : darkTheme()}>
         <div className="App">
             <Grid
               templateAreas={`"header"
