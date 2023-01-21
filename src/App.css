@@ -1,15 +1,5 @@
-.App {
-  text-align: center;
-}
-
-.ConnectBtn {
-  display: flex;
-  justify-content: center;
-}
-.Error {
-  max-width: 40%;
-  margin: 0 auto;
-  justify-self: center;
-  /* display: flex; */
-  /* justify-content: center; */
-}
+/* body {
+  background: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.7)) , url('tom-morel.jpg') no-repeat center
+  center fixed !important;
+  background-size: cover;
+} */

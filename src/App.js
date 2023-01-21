@@ -12,6 +12,8 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 //import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useColorMode, useToast, VStack } from '@chakra-ui/react';
+import Navbar from './Navbar';
 
 
 
@@ -54,9 +56,22 @@ const Faucet = () => {
   const { data,  error, isError, write: request } = useContractWrite(config);
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
-  })
+  });
+  const toast = useToast();
+  const toastIdRef = React.useRef();
+  const id = 'err-toast'
+  function errToast() {
+    if (toast.isActive(id)) {
+      return;
+    }
+    toast({
+      id,
+      description: 'Something went wrong, most likely you exhausted your faucet limit. See the console for more details.',
+    });
+    console.log((prepareError || error)?.message);
+  }
   return ( 
-    <div className="FaucetBtn">
+    <Box>
       {isSuccess ?
         <div>
           <p>Success!</p>
@@ -65,18 +80,17 @@ const Faucet = () => {
           </div>
         </div>
         :
-        <button disabled={!request || isError || isPrepareError} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</button>
+        <Button disabled={!request || isError || isPrepareError} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</Button>
       }
-      {(isPrepareError || isError) && (
-        <div className='Error'>Error: {(prepareError || error)?.message}</div>
-      )}
-    </div>
+      {(isPrepareError || isError) && errToast()}
+    </Box>
     
   )
 };
 
 const App = () => {
   const { address, isConnected } = useAccount();
+
   console.log('address', address);
   console.log('isConnected', isConnected);
 
@@ -84,12 +98,33 @@ const App = () => {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-      <div className="App">
-          <h1>Mumbai USDC Faucet</h1>
-          <div className="ConnectBtn">
-            <ConnectButton />
-          </div>
-          {isConnected ? <Faucet /> : null}
+        <div className="App">
+            <Grid
+              templateAreas={`"header"
+              "main"
+              "footer"`}
+              gridTemplateRows={'50px 1fr 30px'}
+              gridTemplateColumns={'1fr'}
+              height='100vh'
+              gap='1'
+              color='blackAlpha.700'
+              fontWeight='bold'
+            >
+              <GridItem pl='2' bg={"transparent"} area={'header'}>
+                <Navbar />
+              </GridItem>
+              <GridItem pl='2' area={'main'} alignContent='center' alignItems='center'>
+              {/* <VStack spacing='2' align='stretch'> */}
+              <Flex alignItems='center' justifyContent='center' h='100%' flexDirection='column'>
+                <Spacer />
+                  <Center>
+                    {isConnected ? <Faucet /> : null}
+                </Center>
+                <Spacer />
+                </Flex>
+                {/* </VStack> */}
+              </GridItem>
+              </Grid>
       </div>
       </RainbowKitProvider>
     </WagmiConfig>
