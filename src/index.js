@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ChakraProvider theme={theme} resetCSS={true}>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <ColorModeScript  initialColorMode={theme.config.initialColorMode} />
       <App />
     </ChakraProvider>
   </React.StrictMode>
