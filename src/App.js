@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import '@rainbow-me/rainbowkit/styles.css';
-
+import {useTextC} from './theme.js';
 import {
   getDefaultWallets,
   RainbowKitProvider,
@@ -16,7 +16,7 @@ import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useToast, Text, Link
 import Navbar from './Navbar';
 // import { Br } from '@saas-ui/react';
 
-
+// import { mode } from '@chakra-ui/theme-tools';
 
 const { chains, provider } = configureChains(
   [polygonMumbai],
@@ -37,9 +37,10 @@ const wagmiClient = createClient({
   provider
 })
 
-const Landing = () => { 
+const Landing = () => {
+  const textC = useTextC();
   return (
-    <Box textColor='facebook.100'>
+    <Box textColor={ textC }>
       <Text>Connect your wallet to get some mumbai testnet USDC</Text>
     </Box>
   )
@@ -48,6 +49,7 @@ const Landing = () => {
 const Faucet = () => { 
 
   console.log('getUSDC');
+  const textC = useTextC();
   const { config, error: prepareError,
     isError: isPrepareError } = usePrepareContractWrite({
     address: '0x9019a492Cce0CF7c2f1dc04D1B63b6A1bcda285a',
@@ -84,11 +86,11 @@ const Faucet = () => {
       {isSuccess ?
         <Center>
           <Box>
-            <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} color="facebook.100" isExternal>Success! View on PolygonScan</Link>
+            <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} color={ textC } isExternal>Success! View on PolygonScan</Link>
           </Box>
         </Center>
         :
-        <Button disabled={!request || isError || isPrepareError} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</Button>
+        <Button textColor={textC} disabled={!request || isError || isPrepareError} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</Button>
       }
       {(isPrepareError || isError) ? errToast() : null}
     </Box>
@@ -97,11 +99,11 @@ const Faucet = () => {
 };
 
 const App = () => {
+  const textC = useTextC();
   const { address, isConnected } = useAccount();
 
   console.log('address', address);
   console.log('isConnected', isConnected);
-
 
   return (
     <WagmiConfig client={wagmiClient}>
@@ -117,6 +119,7 @@ const App = () => {
               gap='1'
               color='blackAlpha.700'
               fontWeight='bold'
+              textColor={textC}
             >
               <GridItem pl='2' bg={"transparent"} area={'header'}>
                 <Navbar />
