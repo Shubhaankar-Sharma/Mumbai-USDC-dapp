@@ -12,8 +12,9 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 //import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useColorMode, useToast, VStack } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useColorMode, useToast, VStack, Text, Link } from '@chakra-ui/react';
 import Navbar from './Navbar';
+import { Br } from '@saas-ui/react';
 
 
 
@@ -35,6 +36,14 @@ const wagmiClient = createClient({
   connectors,
   provider
 })
+
+const Landing = () => { 
+  return (
+    <Box textColor='facebook.100'>
+      <Text>Connect your wallet to get some mumbai testnet USDC</Text>
+    </Box>
+  )
+};
 
 const Faucet = () => { 
 
@@ -73,16 +82,15 @@ const Faucet = () => {
   return ( 
     <Box>
       {isSuccess ?
-        <div>
-          <p>Success!</p>
-          <div>
-            <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target="_blank" rel="noreferrer">View on PolygonScan</a>
-          </div>
-        </div>
+        <Center>
+          <Box>
+            <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} color="facebook.100" isExternal>Success! View on PolygonScan</Link>
+          </Box>
+        </Center>
         :
         <Button disabled={!request || isError || isPrepareError} onClick={() => request?.()}>{isLoading ? 'Requesting...' : 'Request'}</Button>
       }
-      {(isPrepareError || isError) && errToast()}
+      {(isPrepareError || isError) ? errToast() : null}
     </Box>
     
   )
@@ -118,7 +126,7 @@ const App = () => {
               <Flex alignItems='center' justifyContent='center' h='100%' flexDirection='column'>
                 <Spacer />
                   <Center>
-                    {isConnected ? <Faucet /> : null}
+                    {isConnected ? <Faucet /> : <Landing />}
                 </Center>
                 <Spacer />
                 </Flex>
