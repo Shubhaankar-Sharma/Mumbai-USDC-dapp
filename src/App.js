@@ -11,10 +11,10 @@ import { polygonMumbai } from 'wagmi/chains';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
 //import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useColorMode, useToast, VStack, Text, Link } from '@chakra-ui/react';
+// import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { Box, Button, Center, Flex, Grid, GridItem, Spacer, useToast, Text, Link } from '@chakra-ui/react';
 import Navbar from './Navbar';
-import { Br } from '@saas-ui/react';
+// import { Br } from '@saas-ui/react';
 
 
 
@@ -67,7 +67,7 @@ const Faucet = () => {
     hash: data?.hash,
   });
   const toast = useToast();
-  const toastIdRef = React.useRef();
+  // const toastIdRef = React.useRef();
   const id = 'err-toast'
   function errToast() {
     if (toast.isActive(id)) {
